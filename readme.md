@@ -1,4 +1,4 @@
-This uses sourcecodeshots.com to render an image of your code using its api.
+This uses [source code shots](https://sourcecodeshots.com) to render an image of your code using its api.
 
 # Source Code Shots .nvim
 Simple integration of sourcecodeshots.com into neovim.
@@ -16,6 +16,8 @@ require'scs'.setup {
   tmp_file = '/tmp/scs.png',
 }
 ```
+
+Available themes: [themes](https://sourcecodeshots.com/docs#supported-themes)
 
 ## To take a screenshot
 ```
