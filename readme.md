@@ -1,3 +1,5 @@
+This uses sourcecodeshots.com to render an image of your code using its api.
+
 # Source Code Shots .nvim
 Simple integration of sourcecodeshots.com into neovim.
 
