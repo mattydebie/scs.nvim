@@ -34,12 +34,12 @@ local getVisualSelection = function()
   if first == last then
     first = vim.fn.line("'<")
     last = vim.fn.line("'>")
-
-    print("using registers", first, last)
   end
 
-  print("using visual and curpos", first, last)
-  return { first = first, last = last }
+
+
+  -- make sure we support select from bottom to top as well
+  return { first = math.min(first,last), last = math.max(first,last) }
 end
 
 M.screenshot = function(shot_opts)
@@ -62,6 +62,9 @@ M.screenshot = function(shot_opts)
     },
     output = M.opts.tmp_file
   })
+
+  -- weird way to exit to normal mode
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<esc>", true, false, true), 'x', true)
 
 
   if (opts.clipboard) then
