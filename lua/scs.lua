@@ -26,15 +26,31 @@ M.setup = function(opts)
   M.opts = mergeTables(M.opts, opts)
 end
 
+local getVisualSelection = function()
+  local first = vim.fn.line('v')
+  local last = vim.fn.line('.')
+
+  -- not sure if this is necessary, line('.') seems to work in cmd line and visual mode
+  if first == last then
+    first = vim.fn.line("'<")
+    last = vim.fn.line("'>")
+
+    print("using registers", first, last)
+  end
+
+  print("using visual and curpos", first, last)
+  return { first = first, last = last }
+end
+
 M.screenshot = function(shot_opts)
   local opts = mergeTables(M.defaultShotOpts, shot_opts)
 
-  local vFirst = opts.buffer and 1 or vim.fn.line("'<")
-  local vLast = opts.buffer
-      and vim.api.nvim_buf_line_count(0)
-      or vim.fn.line("'>")
+  -- Choose between entire buffer or visual selection
+  local vSelect = opts.buffer
+      and { first = 1, last = vim.api.nvim_buf_line_count(0) }
+      or getVisualSelection()
 
-  local content = vim.api.nvim_buf_get_lines(0, vFirst - 1, vLast, false)
+  local content = vim.api.nvim_buf_get_lines(0, vSelect.first - 1, vSelect.last, false)
 
   local curl = require('plenary.curl')
   local res = curl.get('https://sourcecodeshots.com/api/image', {
@@ -52,7 +68,7 @@ M.screenshot = function(shot_opts)
     -- if (vim.fn.has('macunix')) then
     -- There should be a better way for this, but I'm not finding it
     os.execute("xclip -sel clip -t image/png " .. M.opts.tmp_file)
- end
+  end
 end
 
 return M
